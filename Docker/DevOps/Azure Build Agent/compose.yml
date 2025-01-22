@@ -1,46 +1,13 @@
 services:
-  azp-agent-01:
+  azp-build-agent:
+    container_name: azp-build-agent-{{.Task.Slot}}
     image: docker.io/internetthingy/azp-agent:alpine-latest
     logging:
       driver: journald
+    deploy:
+      replicas: 5
     environment:
-      - AZP_AGENT_NAME=DK-Infra-02 - Alpine - 01
-      - AZP_URL=https://dev.azure.com/best-start
-      - AZP_TOKEN=y5ruqnr35qxfkbikw7y2brhfzzoyx7fcezjlb6sorl5ldpefwmpq
-      - AZP_POOL=Best Start - Container based Agents
-  azp-agent-02:
-    image: docker.io/internetthingy/azp-agent:alpine-latest
-    logging:
-      driver: journald
-    environment:
-      - AZP_AGENT_NAME=DK-Infra-02 - Alpine - 02
-      - AZP_URL=https://dev.azure.com/best-start
-      - AZP_TOKEN=y5ruqnr35qxfkbikw7y2brhfzzoyx7fcezjlb6sorl5ldpefwmpq
-      - AZP_POOL=Best Start - Container based Agents
-  azp-agent-03:
-    image: docker.io/internetthingy/azp-agent:alpine-latest
-    logging:
-      driver: journald
-    environment:
-      - AZP_AGENT_NAME=DK-Infra-02 - Alpine - 03
-      - AZP_URL=https://dev.azure.com/best-start
-      - AZP_TOKEN=y5ruqnr35qxfkbikw7y2brhfzzoyx7fcezjlb6sorl5ldpefwmpq
-      - AZP_POOL=Best Start - Container based Agents
-  azp-agent-04:
-    image: docker.io/internetthingy/azp-agent:alpine-latest
-    logging:
-      driver: journald
-    environment:
-      - AZP_AGENT_NAME=DK-Infra-02 - Alpine - 04
-      - AZP_URL=https://dev.azure.com/best-start
-      - AZP_TOKEN=y5ruqnr35qxfkbikw7y2brhfzzoyx7fcezjlb6sorl5ldpefwmpq
-      - AZP_POOL=Best Start - Container based Agents
-  azp-agent-05:
-    image: docker.io/internetthingy/azp-agent:alpine-latest
-    logging:
-      driver: journald
-    environment:
-      - AZP_AGENT_NAME=DK-Infra-02 - Alpine - 05
-      - AZP_URL=https://dev.azure.com/best-start
-      - AZP_TOKEN=y5ruqnr35qxfkbikw7y2brhfzzoyx7fcezjlb6sorl5ldpefwmpq
-      - AZP_POOL=Best Start - Container based Agents
+      - AZP_AGENT_NAME=Alpine - {{.Task.Slot}}
+      - AZP_URL=${AZP_URL}
+      - AZP_TOKEN=${AZP_TOKEN}
+      - AZP_POOL=${AZP_POOL}
