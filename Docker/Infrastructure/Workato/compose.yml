@@ -1,0 +1,8 @@
+name: workato
+services:
+    workato-agent:
+        stdin_open: true
+        tty: true
+        environment:
+            - WORKATO_AGENT_ACTIVATION_CODE=${ActivationCode}
+        image: 'daa34553.workato.com/semi-public/amd64/workato-agent:${Version}'

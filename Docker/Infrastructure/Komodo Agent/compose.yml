@@ -1,0 +1,26 @@
+services:
+  periphery:
+    image: ghcr.io/mbecker20/periphery:latest
+    # image: ghcr.io/mbecker20/periphery:latest-aarch64 # use for arm support
+    logging:
+      driver: journald
+    ports:
+      - 8120:8120
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${AppData_Path}/repos:/etc/komodo/repos # manage repos in a docker volume, or change it to an accessible host directory.
+      - ${AppData_Path}/stacks:/etc/komodo/stacks # manage stack files in a docker volume, or change it to an accessible host directory.
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+      # If the disk size is overreporting, can use one of these to 
+      # whitelist / blacklist the disks to filter them, whichever is easier.
+      # Accepts comma separated list of paths.
+      # Usually whitelisting just /etc/hostname gives correct size.
+      - PERIPHERY_INCLUDE_DISK_MOUNTS=/etc/hostname
+      # PERIPHERY_EXCLUDE_DISK_MOUNTS: /snap,/etc/repos
+
+volumes:
+  repos:
+  stacks:

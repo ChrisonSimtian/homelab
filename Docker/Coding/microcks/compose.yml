@@ -1,0 +1,47 @@
+services:
+  mongo:
+    image: docker.io/library/mongo:4.4.29
+    container_name: microcks-db
+    volumes:
+      # Podman does not create missing folders, so we need to use an existing one
+      # Add the ":z" flag to get SELinux configured automatically
+      - "${AppData_Path}/microcks-data:/data/db"
+    #user: "501:1000"
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+
+  postman:
+    image: quay.io/microcks/microcks-postman-runtime:latest
+    container_name: microcks-postman-runtime
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+
+  microcks:
+    depends_on:
+      - mongo
+      - postman
+      # - keycloak
+    image: quay.io/microcks/microcks-uber:latest-native 
+    container_name: microcks
+    ports:
+      - 8080:8080 # <Host Port>:<Container Port>
+      - 8585:9090
+    restart: always
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATA_MONGODB_URI=mongodb://microcks-db:27017
+      - SPRING_DATA_MONGODB_DATABASE=microcks
+      - POSTMAN_RUNNER_URL=http://postman:3000
+      - TEST_CALLBACK_URL=http://microcks:8080
+      # - KEYCLOAK_URL=http://keycloak:8080
+      # - KEYCLOAK_PUBLIC_URL=http://localhost:18080
+      # - JAVA_OPTIONS=-Dspring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:18080/realms/microcks -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://keycloak:8080/realms/microcks/protocol/openid-connect/certs
+      - SERVICES_UPDATE_INTERVAL=0 0 0/2 * * *
+      - MAX_UPLOAD_FILE_SIZE=100MB

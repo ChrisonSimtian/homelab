@@ -1,0 +1,15 @@
+services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:2.9.22' # Version pin to fix issue: https://github.com/NginxProxyManager/nginx-proxy-manager/issues/2750
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    volumes:
+      - ${AppData_Path}/data:/data
+      - ${AppData_Path}/letsencrypt:/etc/letsencrypt
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
