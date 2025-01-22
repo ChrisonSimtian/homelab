@@ -1,0 +1,21 @@
+services:
+    cross-seed:
+        image: ghcr.io/cross-seed/cross-seed
+        container_name: cross-seed
+        environment:
+          - PUID=${UID:-1000}
+          - PGID=${PID:-1000}
+          - TZ=${TZ}
+        ports:
+            - "2468:2468" # you'll need this for daemon mode only
+        env_file:
+            - path: ./override.env
+              required: false
+        volumes:
+            - ${AppData_Dir}/Cross-Seed:/config
+            - ${AppData_Dir}/qbitTorrent/latest/data/BT_backup:/torrents:ro # your torrent clients .torrent cache, can and should be mounted read-only (e.g. qbit: `BT_Backup` | deluge: `state` | transmission: `transmission/torrents` | rtorrent: session dir from `.rtorrent.rc`)
+            - ${Data_Dir}/cross-seeds:/cross-seeds
+            - ${Data_Dir}/data:/data # OPTIONAL!!! this is location of your data (used for data-based searches or linking)
+              # will need to mirror your torrent client's path (like Arr's do)
+        command: daemon # this enables the daemon, change to search to specifically run a search ONLY
+        restart: "no" # make sure to not enable it in search mode, otherwise it will keep rerunning constantly

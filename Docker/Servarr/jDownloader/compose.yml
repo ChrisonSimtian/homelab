@@ -1,0 +1,22 @@
+services:
+  jdownloader:
+    image: jlesage/jdownloader-2
+    container_name: jDownloader
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5800 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - "${AppData_Dir}/jDownloader:/config:rw"
+      - "${Data_Dir}/jDownloader_downloads:/output:rw"
+    ports:
+      - ${jDownloader_Port_WebUI:-5800}:5800
+    env_file:
+      - path: ./override.env
+        required: false
+    restart: unless-stopped
+    networks:
+      - frontend
+      - servarr-network

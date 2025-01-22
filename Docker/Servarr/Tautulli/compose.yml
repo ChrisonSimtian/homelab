@@ -1,0 +1,18 @@
+version: '3'
+services:
+  tautulli:
+    image: ghcr.io/tautulli/tautulli
+    container_name: tautulli
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -f http://localhost:8181 || exit 1
+    volumes:
+      - ${AppData_Dir}/Tautulli:/config
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    ports:
+      - ${Tautulli_Port_WebUI:-8181}:8181

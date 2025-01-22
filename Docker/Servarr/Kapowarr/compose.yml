@@ -1,0 +1,23 @@
+services:
+  kapowarr:
+    image: mrcas/kapowarr:latest
+    container_name: kapowarr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5656 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      # - /portainer/Files/AppData/Config/kapowarr:/config
+      - "${AppData_Dir}/Kapowarr:/app/db"
+      - "${Data_Dir}/data:/data"
+    ports:
+      - ${Kapowarr_Port_WebUI:-5656}:5656
+    env_file:
+      - path: ./override.env
+        required: false
+    restart: unless-stopped
+    networks:
+      - frontend
+      - servarr-network

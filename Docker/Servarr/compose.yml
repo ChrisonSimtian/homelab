@@ -1,0 +1,27 @@
+include:
+  - path:
+    - Radarr/compose.yml
+    - Sonarr/compose.yml
+    - Readarr/compose.yml
+    - Bazarr/compose.yml
+    - FlareSolverr/compose.yml
+    - Overseerr/compose.yml
+    - Prowlarr/compose.yml
+    - qbitTorrent/compose.yml
+    # - Kapowarr/compose.yml
+    # - Mango/compose.yml
+    - Maintainerr/compose.yml
+    - jDownloader/compose.yml
+    - Audiobookshelf/compose.yml
+    - Kavita/compose.yml
+    # - CrossSeed/compose.yml
+
+networks:
+  servarr-network:
+    name: servarr
+  frontend:
+    name: frontend
+    # external: true
+  traefik-network:
+    name: traefik
+    # external: true

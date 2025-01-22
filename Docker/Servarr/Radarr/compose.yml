@@ -1,0 +1,22 @@
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - "${AppData_Dir}/Radarr:/config"
+      - "${Data_Dir}/data:/data"
+    ports:
+      - ${Radarr_Port_WebUI:-7878}:7878
+    env_file:
+      - path: ./override.env
+        required: false
+    restart: unless-stopped
+    networks:
+      - frontend
+      - servarr-network

@@ -1,0 +1,21 @@
+services:
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5055 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - /portainer/Files/AppData/Config/Overseerr:/config
+    ports:
+      - ${Overseerr_Port_WebUI:-5055}:5055
+    restart: unless-stopped
+    env_file:
+      - path: ./override.env
+        required: false
+    networks:
+      - frontend
+      - servarr-network

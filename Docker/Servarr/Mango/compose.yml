@@ -1,0 +1,19 @@
+services:
+  mango:
+    image: hkalexling/mango
+    container_name: mango
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000 || exit 1"]
+    ports:
+      - ${Mango_Port_WebUI:-9000}:9000
+    volumes:
+      - /mnt/nas-01/data:/data
+      - /portainer/Files/AppData/Config/Mango:/root/mango
+      - /portainer/Files/AppData/Config:/root/.config/mango
+    restart: unless-stopped
+    env_file:
+      - path: ./override.env
+        required: false
+    networks:
+      - frontend
+      - servarr-network

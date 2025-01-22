@@ -1,0 +1,23 @@
+services:
+  maintainerr:
+    image: ghcr.io/jorenn92/maintainerr:latest # or jorenn92/maintainerr:latest
+    container_name: maintainerr
+    user: ${UID}:${PID}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:6246 || exit 1"]
+    volumes:
+      - ${AppData_Dir}/Maintainerr:/opt/data
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+#    - DEBUG=true # uncomment to enable debug logs
+    ports:
+      - ${Maintainerr_Port_WebUI:-6246}:6246 
+    env_file:
+      - path: ./override.env
+        required: false
+    restart: unless-stopped
+    networks:
+      - frontend
+      - servarr-network

@@ -1,0 +1,25 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: AudioBookShelf
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - "${AppData_Dir}/AudioBookShelf:/config"
+      - "${Data_Dir}/data:/data"
+      - "${Data_Dir}/data/media/Audiobooks:/audiobooks"
+      - "${Data_Dir}/data/media/Podcasts:/podcasts"
+      - "${Data_Dir}/data/audiobookshelf_metadata:/metadata"
+    ports:
+      - ${Audiobookshelf_Port_WebUI:-13378}:80
+    env_file:
+      - path: ./override.env
+        required: false
+    restart: unless-stopped
+    networks:
+      - frontend
+      - servarr-networkr

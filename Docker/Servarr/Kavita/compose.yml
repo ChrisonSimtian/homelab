@@ -1,0 +1,22 @@
+services:
+  kavita:
+    image: jvmilazz0/kavita:latest
+    container_name: kavita
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - "${AppData_Dir}/Kavita:/kavita/config"
+      - "${Data_Dir}/data:/data"
+    ports:
+      - ${Kavita_Port_WebUI:-5000}:5000
+    env_file:
+      - path: ./override.env
+        required: false
+    restart: unless-stopped
+    networks:
+      - frontend
+      - servarr-network

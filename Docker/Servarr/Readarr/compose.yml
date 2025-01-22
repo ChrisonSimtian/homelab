@@ -1,0 +1,22 @@
+services:
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8787 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - "${AppData_Dir}/Readarr:/config"
+      - "${Data_Dir}/data:/data"
+    ports:
+      - ${Readarr_Port_WebUI:-8787}:8787
+    env_file:
+      - path: ./override.env
+        required: false
+    restart: unless-stopped
+    networks:
+      - frontend
+      - servarr-network

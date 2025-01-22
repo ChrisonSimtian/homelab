@@ -1,0 +1,21 @@
+services:
+  prowlarr:
+    image: ghcr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9696 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+    volumes:
+      - "${AppData_Dir}/Prowlarr:/config"
+    ports:
+      - ${Prowlarr_Port_WebUI:-9696}:9696
+    restart: unless-stopped
+    env_file:
+      - path: ./override.env
+        required: false
+    networks:
+      - frontend
+      - servarr-network

@@ -1,0 +1,26 @@
+services:
+  qbittorrent:
+    image: qbittorrentofficial/qbittorrent-nox:${QBT_VERSION}
+    container_name: qbitTorrent-${QBT_VERSION}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8181 || exit 1"]
+    environment:
+      - PUID=${UID:-1000}
+      - PGID=${PID:-1000}
+      - TZ=${TZ}
+      - QBT_EULA=accept
+      - QBT_WEBUI_PORT=8181
+    volumes:
+      - "${Config_Dir}/qbitTorrent/${QBT_VERSION}:/config"
+      - "${Data_Dir}/data:/data"
+    ports:
+      - ${QBT_PORT_WebUI:-8181}:8181 # WebUI
+      - ${QBT_PORT_Torrent}:43536/tcp
+      - ${QBT_PORT_Torrent}:43536/udp
+    restart: unless-stopped
+    env_file:
+      - path: ./override.env
+        required: false
+    networks:
+      - frontend
+      - servarr-network
